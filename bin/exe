@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# This script is used to run the Skylight CLI in development. It is not used in production.
+
+export RUBYLIB=`pwd`/lib:$RUBYLIB
+
+./exe/skylight-frame "$@"

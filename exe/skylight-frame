@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require "skylight/cmd"
+
+Skylight::Cmd.run

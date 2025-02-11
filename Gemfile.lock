@@ -1,0 +1,48 @@
+PATH
+  remote: .
+  specs:
+    skylight-frame (0.1.0)
+      ruby-keychain (~> 0.4.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ffi (1.17.1)
+    ffi (1.17.1-aarch64-linux-gnu)
+    ffi (1.17.1-aarch64-linux-musl)
+    ffi (1.17.1-arm-linux-gnu)
+    ffi (1.17.1-arm-linux-musl)
+    ffi (1.17.1-arm64-darwin)
+    ffi (1.17.1-x86-linux-gnu)
+    ffi (1.17.1-x86-linux-musl)
+    ffi (1.17.1-x86_64-darwin)
+    ffi (1.17.1-x86_64-linux-gnu)
+    ffi (1.17.1-x86_64-linux-musl)
+    minitest (5.25.4)
+    og-corefoundation (0.2.3)
+      ffi
+    rake (13.2.1)
+    ruby-keychain (0.4.0)
+      ffi
+      og-corefoundation (~> 0.2.0)
+
+PLATFORMS
+  aarch64-linux-gnu
+  aarch64-linux-musl
+  arm-linux-gnu
+  arm-linux-musl
+  arm64-darwin
+  ruby
+  x86-linux-gnu
+  x86-linux-musl
+  x86_64-darwin
+  x86_64-linux-gnu
+  x86_64-linux-musl
+
+DEPENDENCIES
+  minitest (~> 5.16)
+  rake (~> 13.0)
+  skylight-frame!
+
+BUNDLED WITH
+   2.5.14
