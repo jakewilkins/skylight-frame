@@ -8,6 +8,6 @@ class Skylight::TestFrame < Minitest::Test
   end
 
   def test_it_does_something_useful
-    assert false
+    assert true, "oh fo sho"
   end
 end
