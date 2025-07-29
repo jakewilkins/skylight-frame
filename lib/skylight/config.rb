@@ -65,7 +65,7 @@ end
 
 if RUBY_PLATFORM.include?("darwin")
   require "keychain"
-  Skeylight::Config::AuthorizationProvider.backed(:keychain)
+  Skylight::Config::AuthorizationProvider.backed(:keychain)
 else
-  Skeylight::Config::AuthorizationProvider.backed(:env)
+  Skylight::Config::AuthorizationProvider.backed(:env)
 end
