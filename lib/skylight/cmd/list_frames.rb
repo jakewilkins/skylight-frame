@@ -20,7 +20,7 @@ module Skylight
       end
 
       def self.valid?(args)
-        args.size == 0
+        !args
       end
 
       def self.execute(config)

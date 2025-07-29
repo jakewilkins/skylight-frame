@@ -1,35 +1,71 @@
 # frozen_string_literal: true
 
-require "keychain"
-
 module Skylight
   class Config
-    attr_reader :auth_string
+    module AuthorizationProvider
+      module_function
 
-    def self.set_auth_string(password)
-      if item = Keychain.generic_passwords.where(service: 'SkylightFrameAuth').first
-        item.password = password
-        item.save!
-        return
+      VALID_BACKENDS = %i(keychain env).freeze
+      ENV_KEY = "SKYLIGHT_FRAME_AUTH"
+      KEYCHAIN_SERVICE_NAME = "SkylightFrameAuth"
+
+      def backend(value = nil)
+        if value
+          raise "Invalid Authorization Provider: #{value}" unless VALID_BACKENDS.include?(value)
+
+          @backend = value
+        else
+          @backend
+        end
       end
 
-      Keychain.generic_passwords.create(
-        service: 'SkylightFrameAuth',
-        account: 'bob',
-        password: password
-      )
+      def get
+        auth_string = if ENV.key?(ENV_KEY)
+          ENV[ENV_KEY]
+        end
+
+        return auth_string if auth_string
+        return nil unless backend == :keychain
+
+        Keychain.generic_passwords.where(
+          service: 'SkylightFrameAuth'
+        ).first&.password
+      end
+
+      def set(value)
+        if backend == :keychain
+          if (item = Keychain.generic_passwords.where(service: KEYCHAIN_SERVICE_NAME).first)
+            item.password = password
+            item.save!
+            return
+          end
+
+          Keychain.generic_passwords.create(
+            service: KEYCHAIN_SERVICE_NAME,
+            account: 'bob',
+            password: password
+          )
+        elsif backend == :env
+          ENV[ENV_KEY] = value
+        end
+      end
     end
 
-    def self.load
-      auth_string = Keychain.generic_passwords.where(
-        service: 'SkylightFrameAuth',
-      ).first.password
+    attr_reader :auth_string
 
-      new(auth_string:)
+    def self.load
+      new(auth_string: AuthorizationProvider.get)
     end
 
     def initialize(auth_string:)
       @auth_string = auth_string
     end
   end
+end
+
+if RUBY_PLATFORM.include?("darwin")
+  require "keychain"
+  Skeylight::Config::AuthorizationProvider.backed(:keychain)
+else
+  Skeylight::Config::AuthorizationProvider.backed(:env)
 end
