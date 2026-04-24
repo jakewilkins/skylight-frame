@@ -23,8 +23,8 @@ module Skylight
         args
       end
 
-      def self.execute(config, password)
-        Skylight::Config.set_auth_string(password)
+      def self.execute(_config, password)
+        Skylight::Config::AuthorizationProvider.set(password)
       end
     end
   end

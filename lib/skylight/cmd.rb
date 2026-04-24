@@ -20,6 +20,7 @@ module Skylight
 
       def debug(msg)
         return unless debug?
+
         $stderr.puts msg
       end
 
@@ -28,21 +29,21 @@ module Skylight
       def validate_command
         if ARGV.empty?
           puts "No command specified. Please specify a command to run."
-          puts "Valid commands are: #{commands.join(", ")}"
+          puts "Valid commands are: #{commands.join(', ')}"
           exit 1
         end
 
         command = ARGV.shift
-        if !commands.include?(command)
+        unless commands.include?(command)
           puts "Unknown command: #{command}"
-          puts "Valid commands are: #{commands.join(", ")}"
+          puts "Valid commands are: #{commands.join(', ')}"
           exit 1
         end
 
         this_command = command_class(command)
         args = this_command.args(ARGV)
 
-        if !this_command.valid?(args)
+        unless this_command.valid?(args)
           puts "Invalid arguments for command: #{command}"
           puts "Arguments: #{args.inspect}"
           puts "Usage: #{this_command.usage}"
@@ -56,11 +57,14 @@ module Skylight
         debug "Running command: #{command.command}"
         debug "Arguments: #{args.inspect}"
         command.execute(Skylight::Config.load, *args)
-      rescue StandardError => e
+      rescue Skylight::UnknownDeviceError => boom
+        $stderr.puts boom.message
+        exit 404
+      rescue StandardError => boom
         $stderr.puts "Error running command: #{command.command}"
 
-        debug "#{e.class} - #{e.message}"
-        debug e.backtrace.first
+        debug "#{boom.class} - #{boom.message}"
+        debug boom.backtrace.first
         exit 1
       end
 

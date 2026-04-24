@@ -35,7 +35,7 @@ module Skylight
       def set(value)
         if backend == :keychain
           if (item = Keychain.generic_passwords.where(service: KEYCHAIN_SERVICE_NAME).first)
-            item.password = password
+            item.password = value
             item.save!
             return
           end
@@ -43,7 +43,7 @@ module Skylight
           Keychain.generic_passwords.create(
             service: KEYCHAIN_SERVICE_NAME,
             account: 'bob',
-            password: password
+            password: value
           )
         elsif backend == :env
           ENV[ENV_KEY] = value

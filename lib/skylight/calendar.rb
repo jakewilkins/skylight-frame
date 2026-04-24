@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "frame/version"
-
 module Skylight
-  module Frame
-    class FrameResponse
+  module Calendar
+    class CalendarResponse
       attr_reader :name, :id, :email, :attributes
 
       def initialize(name:, id:, email:, attributes:)
@@ -15,11 +13,11 @@ module Skylight
       end
     end
 
-    def list_frames
-      response = get("/api/frames/photo")
+    def list_calendars
+      response = get("/api/frames/calendar")
 
       response["data"].map do |frame|
-        FrameResponse.new(
+        CalendarResponse.new(
           name: frame["attributes"]["name"],
           id: frame["id"],
           email: frame["attributes"]["notification_email"],
@@ -28,11 +26,11 @@ module Skylight
       end
     end
 
-    def send_photos_to_frame(frame_name:, photo_paths:)
-      frame_id = list_frames.find { |frame| frame.name == frame_name }
-      raise Skylight::UnknownDeviceError, frame_name unless frame_id
+    def send_photos_to_calendar(calendar_name:, photo_paths:)
+      calendar_id = list_calendars.find { |cal| cal.name == calendar_name}
+      raise Skylight::UnknownDeviceError, calendar_name unless calendar_id
 
-      perform_send_photos(device_id: frame_id, photo_paths:)
+      perform_send_photos(decide_id: calendar_id, photo_paths:)
     end
   end
 end

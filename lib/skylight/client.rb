@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require_relative "frame"
+require_relative "calendar"
+require_relative "photo_methods"
 
 require "net/http"
 require "json"
@@ -10,6 +12,17 @@ module Skylight
     HOST = "https://app.ourskylight.com"
 
     include Skylight::Frame
+    include Skylight::Calendar
+    include Skylight::PhotoMethods
+
+    class UnknownDeviceError < RuntimeError
+      attr_reader :name
+
+      def initialize(name)
+        @name = name
+        super("Device ID not found with name: #{name}")
+      end
+    end
 
     attr_reader :config
 
@@ -51,26 +64,16 @@ module Skylight
           res.body
         end
       else
-        debug "Unexpected response: #{res.class} - #{res.code}\n#{res.body}"
+        Cmd.debug "Unexpected response: #{res.class} - #{res.code}\n#{res.body}"
         raise "Unexpected response: #{res.code}"
       end
-    end
-
-    def upload_to(url:, file_path:)
-      uri = URI(url)
-      req = Net::HTTP::Put.new(uri)
-      req.body = IO.binread(file_path)
-      req["Content-Type"] = "application/octet-stream"
-      req["Content-Length"] = File.size(file_path)
-
-      request(req)
     end
 
     def headers
       {
         Accept: 'application/json',
-        'User-Agent': 'Skylight/22822 CFNetwork/3826.400.120 Darwin/24.3.0',
-        Authorization: "Basic #{config.auth_string}"
+        'User-Agent': 'SkylightMobile/2.2.2 (ios 26.3.1)',
+        Authorization: "Bearer #{config.auth_string}"
       }
     end
   end
