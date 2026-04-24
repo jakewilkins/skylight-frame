@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = "This ain't shit."
   spec.homepage = "https://github.com/jakewilkins/skylight-frame"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.0.0"
+  spec.required_ruby_version = ">= 3.2.0"
 
   spec.metadata["allowed_push_host"] = ""
 
@@ -29,6 +29,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Uncomment to register a new dependency of your gem
+  spec.add_dependency "base64", "~> 0.3.0"
+  spec.add_dependency "json", "~> 2"
   spec.add_dependency "ruby-keychain", "~> 0.4.0" if RUBY_PLATFORM.include?("darwin")
 
   # For more information and examples about making a new gem, check out our
