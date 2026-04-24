@@ -8,23 +8,29 @@ module Skylight
       end
 
       def self.help
-        "Set the password for the Skylight Frame"
+        "Store credentials (email and password) for the Skylight account"
       end
 
       def self.usage
-        "#{command} [PASSWORD]"
+        "#{command} EMAIL PASSWORD"
       end
 
       def self.args(argv)
-        argv.shift
+        return nil if argv.length < 2
+
+        { email: argv.shift, password: argv.shift }
       end
 
       def self.valid?(args)
-        args
+        args.is_a?(Hash) && args[:email] && args[:password]
       end
 
-      def self.execute(_config, password)
-        Skylight::Config::AuthorizationProvider.set(password)
+      def self.execute(_config, args)
+        Skylight::Config::AuthorizationProvider.update(
+          "email" => args[:email],
+          "password" => args[:password]
+        )
+        puts "Credentials stored."
       end
     end
   end
