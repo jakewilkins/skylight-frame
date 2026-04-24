@@ -47,9 +47,9 @@ module Skylight
 
         expires_hours = (token_data["expires_in"].to_i / 3600.0).round(1)
         puts "Logged in successfully. Token expires in #{expires_hours} hours."
-      rescue StandardError => e
-        $stderr.puts "Login failed: #{e.message}"
-        Cmd.debug e.backtrace&.first
+      rescue StandardError => boom
+        $stderr.puts "Login failed: #{boom.message}"
+        Cmd.debug boom.backtrace&.first
         exit 1
       end
 
