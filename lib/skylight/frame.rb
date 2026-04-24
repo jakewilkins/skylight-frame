@@ -32,7 +32,7 @@ module Skylight
       frame_id = list_frames.find { |frame| frame.name == frame_name }
       raise Skylight::UnknownDeviceError, frame_name unless frame_id
 
-      perform_send_photos(device_id: frame_id, photo_paths:)
+      perform_send_photos(device_id: frame_id.id, photo_paths:)
     end
   end
 end

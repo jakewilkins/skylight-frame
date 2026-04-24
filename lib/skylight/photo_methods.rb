@@ -24,7 +24,7 @@ module Skylight
         }
       end
 
-      Cmd.debug("Uploading photos to frame #{frame_name}:#{frame_id} with messages: #{messages}")
+      Cmd.debug("Uploading photos to device_id #{device_id} with messages: #{messages}")
 
       upload_urls_response = post("/api/message_upload_urls", {
         frame_ids: [device_id],

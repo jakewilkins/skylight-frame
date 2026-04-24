@@ -30,7 +30,7 @@ module Skylight
       calendar_id = list_calendars.find { |cal| cal.name == calendar_name}
       raise Skylight::UnknownDeviceError, calendar_name unless calendar_id
 
-      perform_send_photos(decide_id: calendar_id, photo_paths:)
+      perform_send_photos(device_id: calendar_id.id, photo_paths:)
     end
   end
 end

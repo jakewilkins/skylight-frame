@@ -15,15 +15,6 @@ module Skylight
     include Skylight::Calendar
     include Skylight::PhotoMethods
 
-    class UnknownDeviceError < RuntimeError
-      attr_reader :name
-
-      def initialize(name)
-        @name = name
-        super("Device ID not found with name: #{name}")
-      end
-    end
-
     attr_reader :config
 
     def initialize(config = Skylight::Config.load)
