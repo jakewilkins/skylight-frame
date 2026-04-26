@@ -68,7 +68,14 @@ module Skylight
       body = URI.encode_www_form(
         "grant_type" => "refresh_token",
         "client_id" => CLIENT_ID,
-        "refresh_token" => refresh_token
+        "refresh_token" => refresh_token,
+        "skylight_api_client_device_fingerprint" => device_fingerprint,
+        "skylight_api_client_device_platform" => DEVICE_METADATA["skylight_api_client_device_platform"],
+        "skylight_api_client_device_name" => DEVICE_METADATA["skylight_api_client_device_name"],
+        "skylight_api_client_device_os_version" => DEVICE_METADATA["skylight_api_client_device_os_version"],
+        "skylight_api_client_device_app_version" => DEVICE_METADATA["skylight_api_client_device_app_version"],
+        "skylight_api_client_device_hardware" => DEVICE_METADATA["skylight_api_client_device_hardware"],
+        "source" => DEVICE_METADATA["source"]
       )
 
       req = Net::HTTP::Post.new(uri)
