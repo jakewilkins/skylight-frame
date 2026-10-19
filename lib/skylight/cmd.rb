@@ -19,9 +19,7 @@ module Skylight
       end
 
       def debug(msg)
-        return unless debug?
-
-        $stderr.puts msg
+        Skylight.debug(msg)
       end
 
       private
@@ -70,10 +68,6 @@ module Skylight
 
       def command_class(command)
         Cmd.const_get(constants[commands.index(command)])
-      end
-
-      def debug?
-        ENV["DEBUG"]
       end
 
       def commands

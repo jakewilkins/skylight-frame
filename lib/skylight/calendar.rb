@@ -27,10 +27,24 @@ module Skylight
     end
 
     def send_photos_to_calendar(calendar_name:, photo_paths:)
-      calendar_id = list_calendars.find { |cal| cal.name == calendar_name}
-      raise Skylight::UnknownDeviceError, calendar_name unless calendar_id
+      perform_send_photos(device_id: find_calendar(calendar_name).id, photo_paths:)
+    end
 
-      perform_send_photos(device_id: calendar_id.id, photo_paths:)
+    def list_calendar_photos(calendar_name:)
+      list_photos(device_id: find_calendar(calendar_name).id)
+    end
+
+    def delete_calendar_photos(calendar_name:, photo_ids:)
+      device_id = find_calendar(calendar_name).id
+
+      photo_ids.each { |photo_id| delete_photo(device_id:, photo_id:) }
+    end
+
+    def find_calendar(calendar_name)
+      calendar = list_calendars.find { |cal| cal.name == calendar_name }
+      raise Skylight::UnknownDeviceError, calendar_name unless calendar
+
+      calendar
     end
   end
 end

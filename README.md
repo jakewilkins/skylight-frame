@@ -56,6 +56,25 @@ skylight-frame upload-file -f "Living Room" -p photo1.jpg -p photo2.png
 skylight-frame upload-file -c "Family Calendar" -p photo.jpg
 ```
 
+Each uploaded photo's ID is printed, for use with `delete-photo`.
+
+### List Photos
+
+List the photos on a frame or calendar, newest first:
+
+```bash
+skylight-frame list-photos -f "Living Room"
+skylight-frame list-photos -c "Family Calendar"
+```
+
+### Delete Photos
+
+Delete photos by ID (from `list-photos` or `upload-file`):
+
+```bash
+skylight-frame delete-photo -f "Living Room" -i 983661900 -i 983661901
+```
+
 ### Debug Mode
 
 Set the `DEBUG` environment variable for verbose output:
@@ -95,6 +114,23 @@ client.send_photos_to_calendar(
   calendar_name: "Family Calendar",
   photo_paths: ["photo.jpg"]
 )
+```
+
+`send_photos_to_frame` and `send_photos_to_calendar` return the photos they added, so they can be removed later:
+
+```ruby
+added = client.send_photos_to_frame(frame_name: "Living Room", photo_paths: ["photo1.jpg"])
+added.map(&:id) # => ["1716512690"]
+
+# List photos on a frame or calendar (newest first)
+client.list_frame_photos(frame_name: "Living Room").each do |photo|
+  puts "#{photo.id} #{photo.asset_type} #{photo.created_at}"
+end
+client.list_calendar_photos(calendar_name: "Family Calendar")
+
+# Delete photos by ID
+client.delete_frame_photos(frame_name: "Living Room", photo_ids: added.map(&:id))
+client.delete_calendar_photos(calendar_name: "Family Calendar", photo_ids: ["983661900"])
 ```
 
 ### OAuth Flow

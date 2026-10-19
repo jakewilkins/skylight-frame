@@ -29,10 +29,24 @@ module Skylight
     end
 
     def send_photos_to_frame(frame_name:, photo_paths:)
-      frame_id = list_frames.find { |frame| frame.name == frame_name }
-      raise Skylight::UnknownDeviceError, frame_name unless frame_id
+      perform_send_photos(device_id: find_frame(frame_name).id, photo_paths:)
+    end
 
-      perform_send_photos(device_id: frame_id.id, photo_paths:)
+    def list_frame_photos(frame_name:)
+      list_photos(device_id: find_frame(frame_name).id)
+    end
+
+    def delete_frame_photos(frame_name:, photo_ids:)
+      device_id = find_frame(frame_name).id
+
+      photo_ids.each { |photo_id| delete_photo(device_id:, photo_id:) }
+    end
+
+    def find_frame(frame_name)
+      frame = list_frames.find { |f| f.name == frame_name }
+      raise Skylight::UnknownDeviceError, frame_name unless frame
+
+      frame
     end
   end
 end

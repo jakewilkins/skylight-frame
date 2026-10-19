@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "debug"
 require_relative "auth"
 require_relative "calendar"
 require_relative "frame"
@@ -47,6 +48,17 @@ module Skylight
       request(req)
     end
 
+    def delete(path)
+      ensure_valid_token!
+
+      uri = URI.join(HOST, path)
+
+      req = Net::HTTP::Delete.new(uri)
+      headers.each { |k, v| req[k] = v }
+
+      request(req)
+    end
+
     def request(req)
       res = Net::HTTP.start(req.uri.host, use_ssl: true) do |http|
         http.request(req)
@@ -60,7 +72,7 @@ module Skylight
           res.body
         end
       else
-        Cmd.debug "Unexpected response: #{res.class} - #{res.code}\n#{res.body}"
+        Skylight.debug "Unexpected response: #{res.class} - #{res.code}\n#{res.body}"
         raise "Unexpected response: #{res.code}"
       end
     end
@@ -78,16 +90,16 @@ module Skylight
     def ensure_valid_token!
       return unless config.token_expired?
 
-      Cmd.debug "Token expired, attempting refresh..."
+      Skylight.debug "Token expired, attempting refresh..."
 
       if config.refresh_token
         begin
           token_data = Skylight::Auth.refresh(config.refresh_token)
           store_tokens(token_data)
-          Cmd.debug "Token refreshed successfully."
+          Skylight.debug "Token refreshed successfully."
           return
         rescue StandardError => e
-          Cmd.debug "Refresh failed: #{e.message}, attempting full re-login..."
+          Skylight.debug "Refresh failed: #{e.message}, attempting full re-login..."
         end
       end
 
@@ -100,7 +112,7 @@ module Skylight
       begin
         token_data = Skylight::Auth.login(creds["email"], creds["password"])
         store_tokens(token_data)
-        Cmd.debug "Re-authenticated successfully."
+        Skylight.debug "Re-authenticated successfully."
       rescue StandardError => e
         raise Skylight::Error, "Automatic re-authentication failed: #{e.message}. Run `skylight-frame login` to re-authenticate."
       end

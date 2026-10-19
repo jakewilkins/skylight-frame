@@ -78,10 +78,14 @@ module Skylight
       def self.execute(config, args)
         client = Skylight::Client.new(config)
 
-        if args.frame
+        photos = if args.frame
           client.send_photos_to_frame(frame_name: args.frame, photo_paths: args.paths)
         elsif args.calendar
           client.send_photos_to_calendar(calendar_name: args.calendar, photo_paths: args.paths)
+        end
+
+        photos.each do |photo|
+          puts "Uploaded #{photo.id} #{photo.asset_type}"
         end
       end
     end
